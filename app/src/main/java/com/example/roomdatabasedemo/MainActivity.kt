@@ -12,20 +12,22 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     lateinit var database: ContactDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding=ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         // this is not ideal way , kindly refer singleton pattern
-        database=Room.databaseBuilder(applicationContext,ContactDatabase::class.java,"contactDB").build()
+//        database=Room.databaseBuilder(applicationContext,ContactDatabase::class.java,"contactDB").build()
 
+        //by singleton pattern
+        database = ContactDatabase.getDataBase(this)
         GlobalScope.launch {
-            database.ContactDao().insertContact(Contact(0,"meet","12345678980"))
+            database.ContactDao().insertContact(Contact(0, "meet", "12345678980"))
         }
 
         binding.text.setOnClickListener {
-            database.ContactDao().getContact().observe(this,{
-                binding.text.text=it[1].name
-            })
+            database.ContactDao().getContact().observe(this) {
+                binding.text.text = it[1].name
+            }
         }
     }
 }
